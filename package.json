@@ -1,0 +1,13 @@
+{
+  "name": "tower-of-hanoi-curieux",
+  "version": "1.0.0",
+  "description": "Tower of Hanoi — CurieuX College Event Game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "PID=$(lsof -ti tcp:3000 2>/dev/null); if [ -n \"$PID\" ]; then kill $PID; fi; node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

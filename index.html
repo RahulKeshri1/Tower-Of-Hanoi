@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of Hanoi — CurieuX | SGTBKC</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Welcome / Registration Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="container">
+
+            <!-- Branding Header -->
+            <div class="branding-header">
+                <img src="Assets/Curieux.png" alt="CurieuX Logo" class="brand-logo">
+                <div class="brand-text">
+                    <span class="brand-society">CurieuX</span>
+                    <span class="brand-tagline">The Computer Science Society</span>
+                    <span class="brand-college">Sri Guru Tegh Bahadur Khalsa College</span>
+                    <span class="brand-university">University of Delhi</span>
+                </div>
+                <img src="Assets/DU.jpeg" alt="University of Delhi Logo" class="brand-logo">
+            </div>
+
+            <div class="presents-divider"><span>— PRESENTS —</span></div>
+
+            <h1 class="title">🗼 Tower of Hanoi</h1>
+            <p class="subtitle">Test Your Logic Skills!</p>
+
+            <!-- Registration Form -->
+            <div class="input-group">
+                <label for="player-name">Your Name <span class="required">*</span></label>
+                <input type="text" id="player-name" placeholder="Enter your name..." maxlength="30" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="player-course">Course <span class="required">*</span></label>
+                <input type="text" id="player-course" placeholder="e.g. B.Sc. Computer Science" maxlength="80" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="player-college">College <span class="required">*</span></label>
+                <input type="text" id="player-college" maxlength="120" autocomplete="off"
+                    value="Sri Guru Tegh Bahadur Khalsa College">
+            </div>
+
+            <button id="start-btn" class="btn btn-primary" disabled>Start Game</button>
+            <button id="view-leaderboard-btn" class="btn btn-secondary">View Leaderboard</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="player-info">
+                <span class="player-name-display"></span>
+                <span class="level-badge">Level <span id="current-level">1</span></span>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box timer">
+                    <span class="stat-label">Time Left</span>
+                    <span id="timer" class="stat-value">00:00</span>
+                </div>
+                <div class="stat-box moves">
+                    <span class="stat-label">Moves</span>
+                    <span id="move-count" class="stat-value">0 / <span id="max-moves">15</span></span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Disks</span>
+                    <span id="disk-count" class="stat-value">3</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <p>Move all disks from Tower <strong>A</strong> to Tower <strong>C</strong></p>
+            <p class="rule">⚠️ Smaller disk must always be on top</p>
+        </div>
+
+        <div id="game-area">
+            <div class="towers-container">
+                <div class="tower" id="tower-0" data-tower="0">
+                    <div class="tower-rod"></div>
+                    <div class="tower-base"></div>
+                    <div class="disks-container"></div>
+                    <span class="tower-label">A</span>
+                </div>
+                <div class="tower" id="tower-1" data-tower="1">
+                    <div class="tower-rod"></div>
+                    <div class="tower-base"></div>
+                    <div class="disks-container"></div>
+                    <span class="tower-label">B</span>
+                </div>
+                <div class="tower" id="tower-2" data-tower="2">
+                    <div class="tower-rod"></div>
+                    <div class="tower-base"></div>
+                    <div class="disks-container"></div>
+                    <span class="tower-label">C</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="reset-level-btn" class="btn btn-warning">Reset Level</button>
+            <button id="quit-game-btn" class="btn btn-danger">Quit Game</button>
+        </div>
+
+        <div class="game-footer-brand">
+            Presented by CurieuX — Sri Guru Tegh Bahadur Khalsa College
+        </div>
+    </div>
+
+    <!-- Level Complete Modal -->
+    <div id="level-complete-modal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 Level Complete!</h2>
+            <div class="stats-summary">
+                <p>Time: <span id="complete-time"></span></p>
+                <p>Moves: <span id="complete-moves"></span></p>
+            </div>
+            <div class="modal-buttons">
+                <button id="next-level-btn" class="btn btn-primary">Next Level</button>
+                <button id="quit-here-btn" class="btn btn-secondary">Quit & Save Score</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal">
+        <div class="modal-content game-over">
+            <h2>⏰ Game Over!</h2>
+            <p id="game-over-reason"></p>
+            <div class="modal-buttons">
+                <button id="retry-level-btn" class="btn btn-primary">Retry Level</button>
+                <button id="quit-save-btn" class="btn btn-secondary">Quit & Save Score</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Victory Modal -->
+    <div id="victory-modal" class="modal">
+        <div class="modal-content victory">
+            <h2>🏆 CHAMPION!</h2>
+            <p>You conquered all levels!</p>
+            <div class="stats-summary">
+                <p>Total Time: <span id="total-time"></span></p>
+                <p>Total Moves: <span id="total-moves"></span></p>
+            </div>
+            <button id="victory-save-btn" class="btn btn-primary">Save & View Leaderboard</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Screen -->
+    <div id="leaderboard-screen" class="screen">
+        <div class="container leaderboard-container">
+
+            <!-- Compact branding -->
+            <div class="leaderboard-brand">
+                <img src="Assets/Curieux.png" alt="CurieuX" class="lb-logo">
+                <div>
+                    <h1>🏅 Leaderboard</h1>
+                    <p class="lb-subtitle">CurieuX — SGTBKC, University of Delhi</p>
+                </div>
+                <img src="Assets/DU.jpeg" alt="DU" class="lb-logo">
+            </div>
+
+            <div class="leaderboard-filters">
+                <button class="filter-btn active" data-filter="all">All Players</button>
+                <button class="filter-btn" data-filter="1">Level 1+</button>
+                <button class="filter-btn" data-filter="2">Level 2+</button>
+                <button class="filter-btn" data-filter="3">Level 3+</button>
+                <button class="filter-btn" data-filter="4">Champions 🏆</button>
+            </div>
+
+            <div id="leaderboard-table-container">
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>College</th>
+                            <th>Level</th>
+                            <th>Moves</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+                <p id="no-entries" class="hidden">No entries yet. Be the first!</p>
+            </div>
+
+            <div class="lb-actions">
+                <button id="back-to-home-btn" class="btn btn-primary">← Back to Home</button>
+                <button id="admin-btn" class="btn btn-danger">🔐 Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <h2>🔐 Admin Access</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">Enter admin password to open the admin panel</p>
+            <div class="input-group">
+                <input type="password" id="admin-password" placeholder="Admin password..." autocomplete="off">
+            </div>
+            <p id="admin-error" class="error-msg hidden">❌ Incorrect password!</p>
+            <div class="modal-buttons">
+                <button id="admin-confirm-btn" class="btn btn-primary">Open Admin Panel</button>
+                <button id="admin-cancel-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-panel-modal" class="modal">
+        <div class="modal-content admin-panel-content">
+            <div class="admin-panel-header">
+                <div>
+                    <h2>🛠 Admin Panel</h2>
+                    <p class="admin-panel-subtitle">Edit participant name, course, and college details</p>
+                </div>
+                <button id="admin-panel-close-btn" class="btn btn-secondary admin-close-btn">Close</button>
+            </div>
+
+            <div class="admin-panel-table-wrap">
+                <table id="admin-panel-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>College</th>
+                            <th>Level</th>
+                            <th>Moves</th>
+                            <th>Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-entries-body"></tbody>
+                </table>
+                <p id="admin-no-entries" class="hidden">No saved entries found.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
