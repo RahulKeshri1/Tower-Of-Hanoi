@@ -98,7 +98,7 @@ function writeCSV(entries) {
         csvEscape(String(entry.name || '').slice(0, 50).trim()),
         csvEscape(String(entry.course || '').slice(0, 100).trim()),
         csvEscape(String(entry.college || '').slice(0, 150).trim()),
-        csvEscape(Math.max(0, parseInt(entry.level) || 0)),
+        csvEscape(Math.max(-1, parseInt(entry.level) || 0)),
         csvEscape(Math.max(0, parseInt(entry.totalMoves) || 0)),
         csvEscape(Math.max(0, parseInt(entry.totalTime) || 0))
     ].join(','));
@@ -155,7 +155,7 @@ app.post('/api/save', (req, res) => {
             csvEscape(String(name).slice(0, 50).trim()),
             csvEscape(String(course   || '').slice(0, 100).trim()),
             csvEscape(String(college  || '').slice(0, 150).trim()),
-            csvEscape(Math.max(0, parseInt(level)      || 0)),
+            csvEscape(Math.max(-1, parseInt(level)      || 0)),
             csvEscape(Math.max(0, parseInt(totalMoves) || 0)),
             csvEscape(Math.max(0, parseInt(totalTime)  || 0))
         ].join(',');

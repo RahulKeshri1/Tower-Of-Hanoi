@@ -45,6 +45,7 @@ const Game = (function() {
         isPlaying: false,
         selectedDisk: null,
         selectedTower: null,
+        completedLevels: 0,     // Count of fully cleared levels
         totalMoves: 0,          // Across all levels
         totalTime: 0,           // Across all levels
         levelStartTime: 0       // For calculating level time
@@ -71,12 +72,14 @@ const Game = (function() {
         state.course      = (course  || '').trim();
         state.college     = (college || '').trim();
         state.currentLevel = 1;
+        state.completedLevels = 0;
         state.totalMoves   = 0;
         state.totalTime    = 0;
         
         Storage.saveCurrentPlayer({
             name:    state.playerName,
             currentLevel: 1,
+            completedLevels: 0,
             totalMoves:   0,
             totalTime:    0
         });
@@ -317,11 +320,13 @@ const Game = (function() {
         
         state.totalMoves += state.moveCount;
         state.totalTime += levelTime;
+        state.completedLevels = Math.max(state.completedLevels, state.currentLevel);
         
         // Save progress
         Storage.saveCurrentPlayer({
             name: state.playerName,
             currentLevel: state.currentLevel,
+            completedLevels: state.completedLevels,
             totalMoves: state.totalMoves,
             totalTime: state.totalTime
         });
@@ -385,16 +390,32 @@ const Game = (function() {
         state.isPlaying = false;
         pauseTimer();
         
-        const levelConfig = LEVELS[state.currentLevel];
-        const levelTime = levelConfig ? levelConfig.timeLimit - state.timeRemaining : 0;
+        // Persist only cached cleared-level progress when quitting.
+        // This prevents writing a partially played, unfinished level to CSV.
+        const cached = Storage.getCurrentPlayer() || {};
+        const completedLevels = Math.max(
+            0,
+            parseInt(cached.completedLevels, 10) || 0,
+            state.completedLevels || 0
+        );
+        const cachedTotalMoves = Math.max(
+            0,
+            parseInt(cached.totalMoves, 10) || 0,
+            state.totalMoves || 0
+        );
+        const cachedTotalTime = Math.max(
+            0,
+            parseInt(cached.totalTime, 10) || 0,
+            state.totalTime || 0
+        );
         
         const entry = {
             name:       state.playerName,
             course:     state.course,
             college:    state.college,
-            level:      state.currentLevel,
-            totalMoves: state.totalMoves + state.moveCount,
-            totalTime:  state.totalTime  + levelTime,
+            level:      completedLevels === 0 ? -1 : completedLevels,
+            totalMoves: cachedTotalMoves,
+            totalTime:  cachedTotalTime,
             timestamp:  new Date().toISOString()
         };
         
@@ -424,6 +445,7 @@ const Game = (function() {
             isPlaying: state.isPlaying,
             selectedDisk: state.selectedDisk,
             selectedTower: state.selectedTower,
+            completedLevels: state.completedLevels,
             totalMoves: state.totalMoves,
             totalTime: state.totalTime,
             levelConfig: LEVELS[state.currentLevel]
