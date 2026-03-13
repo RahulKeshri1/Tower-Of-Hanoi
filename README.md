@@ -348,14 +348,3 @@ Sri Guru Tegh Bahadur Khalsa College, University of Delhi
 For issues or suggestions, contact the event organizers.
 
 </div>
-cd /Users/rahul/BSCS/Curieux/Tower\ Of\ Hanoi
-
-# Remove the file from git tracking (but keep it locally)
-git rm --cached data/scores.csv
-
-# Commit this change
-git add .gitignore
-git commit -m "Remove data/scores.csv from git tracking"
-
-# Push to remote
-git push
